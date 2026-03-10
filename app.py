@@ -12,10 +12,19 @@ dynamodb = boto3.resource('dynamodb', region_name='us-east-1')  # e.g., 'us-east
 users_table = dynamodb.Table('Users')
 orders_table = dynamodb.Table('Orders')
 
-# # ================== TEMPORARY DATA STORES ==================
+# ================== TEMPORARY DATA STORES (FALLBACK) ==================
+# Local dictionary to store users if DynamoDB fails.
+# The structure is: {'username': {'password': hashed_password, 'email': email, ...}}
 users = {
-    'testuser': generate_password_hash('testpass')
+    'testuser': {
+        'username': 'testuser',
+        'password': generate_password_hash('testpass'),
+        'email': 'testuser@example.com'
+    }
 }
+
+# Local list to store orders if DynamoDB fails.
+orders = []
 
 products = {
     'non_veg_pickles': [
@@ -84,8 +93,20 @@ def login():
             return render_template('login.html', error='Invalid password')
 
         except Exception as e:
-            app.logger.error(f"Database error: {str(e)}")
-            return render_template('login.html', error='Login failed. Try again later')
+            app.logger.warning(f"DynamoDB unavailable ({str(e)}). Falling back to local memory.")
+            
+            # --- LOCAL FALLBACK ---
+            if username in users:
+                user = users[username]
+                if check_password_hash(user['password'], password):
+                    session['logged_in'] = True
+                    session['username'] = username
+                    session.setdefault('cart', [])
+                    return redirect(url_for('home'))
+                else:
+                    return render_template('login.html', error='Invalid password')
+            else:
+                return render_template('login.html', error='User not found in local memory')
 
     return render_template('login.html')
 
@@ -97,7 +118,7 @@ def signup():
         password = request.form['password']
 
         try:
-            # Check if username exists
+            # Check if username exists in DynamoDB
             response = users_table.get_item(Key={'username': username})
             if 'Item' in response:
                 return render_template('signup.html', error='Username already exists')
@@ -117,8 +138,19 @@ def signup():
             return redirect(url_for('login'))
 
         except Exception as e:
-            app.logger.error(f"Signup error: {str(e)}")
-            return render_template('signup.html', error='Registration failed. Please try again.')
+            app.logger.warning(f"DynamoDB unavailable ({str(e)}). Storing user in local memory.")
+            
+            # --- LOCAL FALLBACK ---
+            if username in users:
+                return render_template('signup.html', error='Username already exists locally')
+            
+            hashed_password = generate_password_hash(password)
+            users[username] = {
+                'username': username,
+                'email': email,
+                'password': hashed_password
+            }
+            return redirect(url_for('login'))
 
     return render_template('signup.html')
 
@@ -199,24 +231,26 @@ def checkout():
             if not cart_items:
                 return render_template('checkout.html', error="Your cart is empty.")
 
+            # Prepare order item
+            order_data = {
+                'order_id': str(uuid.uuid4()),
+                'username': session.get('username', 'Guest'),
+                'name': name,
+                'address': address,
+                'phone': phone,
+                'items': cart_items,
+                'total_amount': str(total_amount),  # ✅ Convert Decimal to string
+                'payment_method': payment_method,
+                'timestamp': datetime.now().isoformat()
+            }
+
             # Store order in DynamoDB
             try:
-                orders_table.put_item(
-                    Item={
-                        'order_id': str(uuid.uuid4()),
-                        'username': session.get('username', 'Guest'),
-                        'name': name,
-                        'address': address,
-                        'phone': phone,
-                        'items': cart_items,
-                        'total_amount': str(total_amount),  # ✅ Convert Decimal to string to avoid JSON issues
-                        'payment_method': payment_method,
-                        'timestamp': datetime.now().isoformat()
-                    }
-                )
+                orders_table.put_item(Item=order_data)
             except Exception as db_error:
-                print(f"DynamoDB Error: {db_error}")
-                return render_template('checkout.html', error="Failed to save order. Please try again later.")
+                app.logger.warning(f"DynamoDB unavailable ({str(db_error)}). Saving order locally.")
+                # --- LOCAL FALLBACK ---
+                orders.append(order_data)
 
             # Redirect to success page with success message
             return redirect(url_for('sucess', message="Your order has been placed successfully!"))  # ✅ Fixed typo
