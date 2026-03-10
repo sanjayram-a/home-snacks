@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Placed! – HomeMade Pickles &amp; Snacks</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <div class="success-wrapper">
+    <div class="success-box">
+
+      <!-- Animated checkmark icon -->
+      <div class="success-icon" style="animation: pop 0.5s cubic-bezier(0.36,0.07,0.19,0.97);">
+        ✅
+      </div>
+
+      <h1>Order Placed!</h1>
+      <p>Thank you for shopping with <strong>HomeMade Pickles &amp; Snacks</strong>.<br>Your order has been received and will be on its way soon!</p>
+
+      <div class="order-id-badge">
+        📦 We'll contact you on your provided phone number for delivery updates.
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;max-width:280px;margin:0 auto;">
+        <a href="/home" class="btn btn-primary btn-full">🛒 Continue Shopping</a>
+        <a href="/logout" class="btn btn-secondary btn-full">Logout</a>
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    @keyframes pop {
+      0%   { transform: scale(0.5); opacity: 0; }
+      70%  { transform: scale(1.1); }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+  </style>
+
+  <script>
+    // Clear cart after successful order
+    localStorage.removeItem('cart');
+  </script>
+</body>
+</html>

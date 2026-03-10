@@ -1,0 +1,53 @@
+# ── Python ──────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# ── Virtual environments ─────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Flask / web ──────────────────────────────────────────────
+instance/
+.webassets-cache
+flask_session/
+
+# ── AWS / Credentials (NEVER commit these) ──────────────────
+.aws/
+*.pem
+*.key
+credentials
+config
+
+# ── Environment variables ────────────────────────────────────
+.env
+.env.*
+*.env
+
+# ── Temp files ───────────────────────────────────────────────
+temp/
+*.tmp
+*.bak
+*.swp
+
+# ── Node (if any tooling used) ───────────────────────────────
+node_modules/
+package-lock.json
+
+# ── OS junk ─────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDEs ─────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.sublime-workspace

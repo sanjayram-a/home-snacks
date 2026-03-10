@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home – HomeMade Pickles &amp; Snacks</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/home" class="navbar-brand">
+        <span class="brand-icon">🫙</span> HomeMade Pickles
+      </a>
+      <ul class="navbar-links">
+        <li><a href="/non_veg_pickles">🍖 Non-Veg Pickles</a></li>
+        <li><a href="/veg_pickles">🥗 Veg Pickles</a></li>
+        <li><a href="/snacks">🍿 Snacks</a></li>
+        <li><a href="/cart" class="cart-badge">🛒 Cart</a></li>
+        <li><a href="/logout" class="btn-logout" style="padding:7px 16px;border-radius:30px;font-size:0.92rem;font-weight:500;color:#8b6045;background:var(--surface2);border:1.5px solid var(--border);">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" style="padding:72px 24px;">
+    <div class="container">
+      <div class="hero-badge">👋 &nbsp;Welcome back!</div>
+      <h1 class="hero-title" style="font-size:clamp(2rem,5vw,3.2rem);">
+        Hello, {{ session['username'] }}!
+      </h1>
+      <p class="hero-subtitle">What are you craving today? Pick a category below to start shopping.</p>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="categories">
+    <div class="container">
+      <h2 class="section-title">Our Categories</h2>
+      <p class="section-sub">Everything made fresh, with love and tradition</p>
+
+      <div class="category-grid">
+        <a href="/non_veg_pickles" class="category-card">
+          <span class="category-icon">🍖</span>
+          <h3>Non-Veg Pickles</h3>
+          <p>Chicken, Mutton, Fish, Prawns &amp; more fiery favourites</p>
+          <div style="margin-top:20px;">
+            <span class="btn btn-primary btn-sm">Shop Now →</span>
+          </div>
+        </a>
+
+        <a href="/veg_pickles" class="category-card">
+          <span class="category-icon">🥭</span>
+          <h3>Veg Pickles</h3>
+          <p>Mango, Lemon, Tomato &amp; traditional classics</p>
+          <div style="margin-top:20px;">
+            <span class="btn btn-primary btn-sm">Shop Now →</span>
+          </div>
+        </a>
+
+        <a href="/snacks" class="category-card">
+          <span class="category-icon">🍿</span>
+          <h3>Snacks</h3>
+          <p>Banana Chips, Laddus, Chikkis &amp; crunchy delights</p>
+          <div style="margin-top:20px;">
+            <span class="btn btn-primary btn-sm">Shop Now →</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Info strip -->
+  <section style="background:var(--surface);border-top:2px solid var(--border);padding:40px 24px;">
+    <div class="container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;text-align:center;">
+      <div>
+        <div style="font-size:2rem;margin-bottom:8px;">🌿</div>
+        <strong style="display:block;margin-bottom:4px;">Natural Ingredients</strong>
+        <span class="text-muted">No preservatives</span>
+      </div>
+      <div>
+        <div style="font-size:2rem;margin-bottom:8px;">👩‍🍳</div>
+        <strong style="display:block;margin-bottom:4px;">Homemade Quality</strong>
+        <span class="text-muted">Family recipes since decades</span>
+      </div>
+      <div>
+        <div style="font-size:2rem;margin-bottom:8px;">📦</div>
+        <strong style="display:block;margin-bottom:4px;">Pan-India Delivery</strong>
+        <span class="text-muted">Doorstep shipping</span>
+      </div>
+      <div>
+        <div style="font-size:2rem;margin-bottom:8px;">💳</div>
+        <strong style="display:block;margin-bottom:4px;">Easy Payment</strong>
+        <span class="text-muted">COD, Card &amp; UPI</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 <span>HomeMade Pickles &amp; Snacks</span>. Made with ❤️</p>
+  </footer>
+
+</body>
+</html>

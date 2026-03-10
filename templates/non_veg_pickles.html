@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Non-Veg Pickles – HomeMade Pickles &amp; Snacks</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/home" class="navbar-brand">
+        <span class="brand-icon">🫙</span> HomeMade Pickles
+      </a>
+      <ul class="navbar-links">
+        <li><a href="/non_veg_pickles" class="active">🍖 Non-Veg</a></li>
+        <li><a href="/veg_pickles">🥗 Veg</a></li>
+        <li><a href="/snacks">🍿 Snacks</a></li>
+        <li><a href="/cart" class="cart-badge">🛒 Cart</a></li>
+        <li><a href="/logout" style="padding:7px 16px;border-radius:30px;font-size:0.92rem;font-weight:500;color:#8b6045;background:var(--surface2);border:1.5px solid var(--border);">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <h1>🍖 Non-Veg Pickles</h1>
+      <p>Fiery, bold &amp; bursting with flavour. 100% homemade.</p>
+    </div>
+  </div>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <div class="container">
+      <a href="/home">Home</a><span>›</span>Non-Veg Pickles
+    </div>
+  </div>
+
+  <!-- Products -->
+  <section class="products-section">
+    <div class="container">
+      {% if products %}
+      <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+          <div class="product-card-header">
+            <span class="product-emoji">🍖</span>
+            <div class="product-name">{{ product.name }}</div>
+          </div>
+          <div class="product-card-body">
+            <div class="weight-options">
+              {% for weight, price in product.weights.items() %}
+              <div class="weight-row">
+                <span class="weight-label">{{ weight }}g</span>
+                <span class="weight-price">₹{{ price }}</span>
+                <button class="btn btn-primary btn-sm"
+                  onclick="addToCart('{{ product.name }}', '{{ weight }}', {{ price }})">
+                  + Add
+                </button>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div style="text-align:center;padding:80px;color:var(--text-muted);">
+        <div style="font-size:3rem;margin-bottom:16px;">🫙</div>
+        <p>No products available right now. Check back soon!</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 <span>HomeMade Pickles &amp; Snacks</span>. Made with ❤️</p>
+  </footer>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <script>
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+    function addToCart(name, weight, price) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.push({ name, weight, price });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      showToast('✅ ' + name + ' (' + weight + 'g) added to cart!');
+    }
+  </script>
+</body>
+</html>
